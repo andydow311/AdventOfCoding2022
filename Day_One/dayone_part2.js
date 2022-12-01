@@ -1,6 +1,6 @@
 const fs = require('fs');
 const readline = require('readline');
-const message = "SMETHING IS WRONG!"
+const message = "SOMETHING IS WRONG!"
 const testFile = 'calories_test.txt'
 const actualFile = 'calories.txt'
 
@@ -16,15 +16,12 @@ function getTopThree(arr) {
 
 async function processLineByLine(fileName) {
   const fileStream = fs.createReadStream(fileName);
-
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity
   });
-
   let output = 0
   const calories = []
-
   for await (const line of rl) {
     if (line.length > 0){
         output = output + parseInt(line)
