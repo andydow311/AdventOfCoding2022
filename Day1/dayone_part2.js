@@ -3,6 +3,7 @@ const readline = require('readline');
 const message = "SOMETHING IS WRONG!"
 const testFile = 'calories_test.txt'
 const actualFile = 'calories.txt'
+const expectedTestValue = 45000
 
 function compareFunction(a,b){return b-a}
 
@@ -35,7 +36,7 @@ async function processLineByLine(fileName) {
 
 async function getResult() {
     const test =  await processLineByLine(testFile)
-    console.assert(test == 45000, message)
+    console.assert(test == expectedTestValue, message)
     const result = await processLineByLine(actualFile)
     console.log(`output is : ${result}`)
   }
