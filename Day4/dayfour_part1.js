@@ -22,7 +22,6 @@ async function processLineByLine(fileName) {
     let output = 0
     for await (const line of rl) {
       if (line.length > 0){
-          //it's a given requirement that string will always be even
           const firstIntegerOfFirstAssignment = parseInt(line.split(",")[0].split("-")[0])
           const secondIntegerOfFirstAssignment = parseInt(line.split(",")[0].split("-")[1])
           const fistArray = getArrayOfIntegers(firstIntegerOfFirstAssignment,secondIntegerOfFirstAssignment)

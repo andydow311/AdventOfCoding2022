@@ -26,7 +26,6 @@ async function processLineByLine(fileName) {
     let output = 0
     for await (const line of rl) {
       if (line.length > 0){
-          //it's a given requirement that string will always be even
           const fistCompartment = line.slice(0, line.length / 2)
           const secondCompartment = line.slice(line.length / 2, line.length)
           const commonElementPrioirty = getCommonCharacterPriority(fistCompartment, secondCompartment)
