@@ -59,7 +59,7 @@ async function readAndProcessInput(fileName) {
       row++  
       if (line.length > 0){
         if(row == 1){
-            populateStacksMap(line)
+          populateStacksMap(line)
         }
        if(line.includes("move")){
           moveCrates(line)
