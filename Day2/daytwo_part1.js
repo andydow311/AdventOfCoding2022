@@ -1,64 +1,47 @@
 const fs = require('fs')
-const readline = require('readline')
-const message = "SOMETHING IS WRONG!"
-const testFile = 'strategy_test.txt'
-const actualFile = 'strategy.txt'
-const expectedTestValue = 15
+let output = 0
 
-const winnerLoserMap = new Map()
-winnerLoserMap.set('A', 'Z')
-winnerLoserMap.set('B', 'X')
-winnerLoserMap.set('C', 'Y')
-winnerLoserMap.set('X', 'C')
-winnerLoserMap.set('Y', 'A')
-winnerLoserMap.set('Z', 'B')
-
-const shapeScores = new Map()
-shapeScores.set('X', 1)
-shapeScores.set('Y', 2)
-shapeScores.set('Z', 3)
-
-
-function getRoundScore(me, elf){
-    const shapeScore =  parseInt(shapeScores.get(me))
-    
-   if(winnerLoserMap.get(me) == elf){
-    //win
-    return 6 + shapeScore
-   }
-    
-   if(winnerLoserMap.get(me) != elf && winnerLoserMap.get(elf) != me){
-    //draw
-    return 3+shapeScore
-    }
-   
-    //lose
-    return shapeScore 
+const shapeScores = {
+  'X': 1,
+  'Y': 2,
+  'Z': 3
 }
 
-async function processLineByLine(fileName) {
-    const fileStream = fs.createReadStream(fileName)
-    const rl = readline.createInterface({
-      input: fileStream,
-      crlfDelay: Infinity
-    });
-    let output = 0
-    for await (const line of rl) {
-      if (line.length > 0){
-          const elf = line.charAt(0);
-          const me = line.charAt(line.length - 1)
-          const roundScore = getRoundScore(me, elf)
-          output = output + roundScore
-      }
-    }
-    return output
-  }
+const winnerLoserMap = {
+  'A': 'Z',
+  'B': 'X',
+  'C': 'Y',
+  'X': 'C',
+  'Y': 'A',
+  'Z': 'B'
+}
 
-  async function getResult() {
-    const test =  await processLineByLine(testFile)
-    console.assert(test == expectedTestValue, message)
-    const result = await processLineByLine(actualFile)
-    console.log(`output is : ${result}`)
+function myRoundScore(myStrategy, elfStrategy){
+  const shapeScore =  shapeScores[myStrategy]
+  const win = winnerLoserMap[myStrategy] == elfStrategy
+  const lose = winnerLoserMap[elfStrategy] == myStrategy
+  if(win){
+    return 6 + shapeScore
   }
-  
-  getResult()
+  if(lose){
+    return shapeScore
+  }
+  return 3+shapeScore
+}
+
+const parseData = (data) => {
+  const lines = data.toString().split("\n")
+  for (let i = 0; i < lines.length; ++i) {
+    const elfStrategy = lines[i][0];
+    const myStrategy = lines[i][lines[i].length - 1]
+    output = output + myRoundScore(myStrategy, elfStrategy)
+  }
+}
+
+
+const solve = (err, data) => {
+  parseData(data)
+  console.log(`output is ${output}`)
+}
+
+fs.readFile("strategy.txt", solve)
