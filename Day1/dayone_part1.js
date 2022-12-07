@@ -1,36 +1,25 @@
-const fs = require('fs');
-const readline = require('readline');
-const message = "SOMETHING IS WRONG!"
-const testFile = 'calories_test.txt'
-const actualFile = 'calories.txt'
-const expectedTestValue = 24000
+const fs = require('fs')
+let calories = 0
+let maximumCalories = 0
 
-async function processLineByLine(fileName) {
-  const fileStream = fs.createReadStream(fileName);
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
-  });
-  let output = 0
-  let finalOutput = 0
-  for await (const line of rl) {
-    if (line.length > 0){
-        output = output + parseInt(line)
+const parseData = (data) => {
+  const lines = data.toString().split("\n")
+  for (let i = 0; i < lines.length; ++i) {
+    if (lines[i].length === 0) {
+      if(calories > maximumCalories){
+        maximumCalories = calories
+      }
+      calories = 0
     }else{
-        if(finalOutput < output){
-            finalOutput = parseInt(output)
-        }
-        output = 0
+      calories = calories + parseInt(lines[i])
     }
   }
-  return parseInt(finalOutput)
 }
 
-async function getResult() {
-  const test =  await processLineByLine(testFile)
-  console.assert(test == expectedTestValue, message)
-  const result = await processLineByLine(actualFile)
-  console.log(`output is : ${result}`)
+const solve = (err, data) => {
+  parseData(data)
+  console.log(console.log(`maximum calories is ${maximumCalories}`))
 }
 
-getResult()
+
+fs.readFile("calories.txt", solve)

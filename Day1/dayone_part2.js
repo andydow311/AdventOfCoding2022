@@ -1,13 +1,10 @@
-const fs = require('fs');
-const readline = require('readline');
-const message = "SOMETHING IS WRONG!"
-const testFile = 'calories_test.txt'
-const actualFile = 'calories.txt'
-const expectedTestValue = 45000
+const fs = require('fs')
+let calories = 0
+let elvesCalories =[]
 
 function compareFunction(a,b){return b-a}
 
-function getTopThree(arr) {
+function sumTopThreeCaloriesValues(arr) {
     arr.sort(compareFunction)
     var first = arr[0]
     var second = arr[1]
@@ -15,30 +12,22 @@ function getTopThree(arr) {
     return parseInt(first) + parseInt(second) + parseInt(third)   
 }
 
-async function processLineByLine(fileName) {
-  const fileStream = fs.createReadStream(fileName);
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
-  });
-  let output = 0
-  const calories = []
-  for await (const line of rl) {
-    if (line.length > 0){
-        output = output + parseInt(line)
+const parseData = (data) => {
+  const lines = data.toString().split("\n")
+  for (let i = 0; i < lines.length; ++i) {
+    if (lines[i].length === 0) {
+      elvesCalories.push(calories)
+      calories = 0
     }else{
-        calories.push(parseInt(output))
-        output = 0
+      calories = calories + parseInt(lines[i])
     }
   }
-  return getTopThree(calories)
 }
 
-async function getResult() {
-    const test =  await processLineByLine(testFile)
-    console.assert(test == expectedTestValue, message)
-    const result = await processLineByLine(actualFile)
-    console.log(`output is : ${result}`)
-  }
-  
-getResult()
+const solve = (err, data) => {
+  parseData(data)
+  console.log(console.log(`total is ${sumTopThreeCaloriesValues(elvesCalories)}`))
+}
+
+
+fs.readFile("calories.txt", solve)
