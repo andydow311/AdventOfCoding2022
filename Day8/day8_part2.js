@@ -7,8 +7,8 @@ const lookLeft = (index, treeHeight, line) => {
         return scenicscore
     }
  
-    for(let i=index; i >0; i--) {
-        const secondTreeHeight = parseInt(line[i-1])
+    for(let level=index; level >0; level--) {
+        const secondTreeHeight = parseInt(line[level-1])
         scenicscore++
         if(secondTreeHeight >= treeHeight){
             return scenicscore
@@ -17,14 +17,13 @@ const lookLeft = (index, treeHeight, line) => {
     return scenicscore
   }
 
-
   const lookRight = (index, treeHeight, line) => {
     let scenicscore = 0
     if(index ==0 || index == line.length-1){
         return scenicscore
     }
-    for(let i=index; i<line.length-1; i++) {
-        const secondTreeHeight = parseInt(line[i+1])
+    for(let level=index; level<line.length-1; level++) {
+        const secondTreeHeight = parseInt(line[level+1])
         scenicscore++
         if(secondTreeHeight >= treeHeight){
             return scenicscore
@@ -67,29 +66,28 @@ const lookDown = (index, treeHeight, line, lines, level) => {
     return scenicscore
 }
 
+const score = (left, right, up, down) => {
+    return left*right*up*down
+}
+
 const parseData = (data) => {
     const lines = data.toString().split("\n")
-    for (let i = 1; i < lines.length-1; ++i) {
-      const line = lines[i]
-        for(j=0; j< line.length; j++){
-            const treeHeight = parseInt(line[j])    
-            const leftScore = lookLeft(j, treeHeight, line)
-            const rightScore =lookRight(j, treeHeight, line)
-            const downScore =lookDown(j, treeHeight, line, lines, i)
-            const upScore = lookUp(j, treeHeight, line, lines, i)
-            const scenicScore = leftScore*rightScore*downScore*upScore
+    for (let level = 1; level < lines.length-1; ++level) {
+      const line = lines[level]
+        for(index=0; index< line.length; index++){
+            const treeHeight = parseInt(line[index])    
+            const scenicScore = score(lookLeft(index, treeHeight, line), lookRight(index, treeHeight, line),
+                lookUp(index, treeHeight, line, lines, level), lookDown(index, treeHeight, line, lines, level))
             if(maxScenicScore < scenicScore){
                 maxScenicScore = scenicScore
             }
         } 
     }
 }
-    
   
+const solve = (err, data) => {
+    parseData(data)
+    console.log(`maxScenicScore is ${maxScenicScore}`)
+}
   
-  const solve = (err, data) => {
-      parseData(data)
-      console.log(`maxScenicScore is ${maxScenicScore}`)
-  }
-  
-  fs.readFile("input.txt", solve)
+fs.readFile("input.txt", solve)

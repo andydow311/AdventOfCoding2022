@@ -1,5 +1,6 @@
 const fs = require("fs")
 let numberOfVisibleTrees = 0
+let numberOfInVisibleTrees = 0
 
 const lookLeft = (index, treeHeight, line) => {
     if(index ==0 || index == line.length-1){
@@ -52,36 +53,19 @@ const lookDown = (index, treeHeight, line, lines, level) => {
 
 const parseData = (data) => {
     const lines = data.toString().split("\n")
-    for (let i = 0; i < lines.length; ++i) {
-      const line = lines[i]
-      if(i==0 || i == lines.length- 1){
+    for (let row = 0; row < lines.length; ++row) {
+      const line = lines[row]
+      if(row==0 || row == lines.length- 1){
           numberOfVisibleTrees = numberOfVisibleTrees + line.length
       }else{
-        for(j=0; j< line.length; j++){
+        for(index=0; j< line.length; j++){
             const treeHeight = parseInt(line[j])    
-            if(lookLeft(j, treeHeight, line)){
-                numberOfVisibleTrees++
-                continue
-           }else{ 
-                if(lookRight(j, treeHeight, line)){
-                    numberOfVisibleTrees++
-                    continue
-                }else{
-                    if(lookDown(j, treeHeight, line, lines, i)){
-                        numberOfVisibleTrees++
-                        continue
-                    }else{
-                        if(lookUp(j, treeHeight, line, lines, i)){
-                            numberOfVisibleTrees++
-                            continue
-                        }
-                    }
-                }
-            } 
+            const visibility = lookLeft(j, treeHeight, line) ||  lookRight(j, treeHeight, line) || lookDown(j, treeHeight, line, lines, row) || lookUp(j, treeHeight, line, lines, row)
+            visibility ? numberOfVisibleTrees++ : numberOfInVisibleTrees++
         }
-      }
     }
   }
+}
   
   const solve = (err, data) => {
       parseData(data)
