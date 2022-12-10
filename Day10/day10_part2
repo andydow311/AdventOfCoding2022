@@ -1,0 +1,75 @@
+const fs = require("fs")
+let X = 1
+let cycle =0
+let cycles = new Map()
+let crt = new Map()
+let spriteFirst = 0
+let spriteSecond = 1
+let spriteThird = 2
+
+function  replaceChar(original, index, replacement) {
+    return original.substring(0, index) + replacement + original.substring(index + replacement.length);
+}
+
+function update(cycle){
+        let level = parseInt(Math.floor(cycle/40)) +1
+        let originalRow = crt.get(level)
+        let thisIndex = cycle-1 -((level-1)*40)
+        if(thisIndex == spriteFirst || thisIndex == spriteSecond || thisIndex == spriteThird){
+            newRow = replaceChar(originalRow, thisIndex, '#')
+            crt.delete(level)
+            crt.set(level,newRow)
+        }
+        cycles.set(cycle, X)
+}
+
+const parseData = (data) => {
+    const lines = data.toString().split("\n")
+    for (let row = 0; row < lines.length; ++row) {
+      const line = lines[row].trim()
+      const instruction = line.trim().split(" ")[0]
+      const value = parseInt(line.trim().split(" ")[1])
+      cycle++
+      if(instruction == "noop"){
+        update(cycle)
+        cycles.set(cycle, X)
+      }else{
+        cycles.set(cycle, X)
+        update(cycle)
+        cycle++
+        cycles.set(cycle, X)
+        update(cycle)
+        X = X+value
+        spriteFirst = X-1
+        spriteSecond = X 
+        spriteThird = X+1
+      }
+     }
+}
+
+const initializeCrt = () =>{
+    for(let level =1; level <=6; level++){
+        let row = ""
+        for(let width =0; width < 40; width++){
+            row= row+ "."
+        }
+        crt.set(level,row)
+    }
+}
+
+const printCert = () => {
+    for(let level =1; level <=6; level++){
+        console.log(crt.get(level))        
+    }
+}
+  
+const solve = (err, data) => {
+      initializeCrt()
+      parseData(data)
+      printCert()
+     
+  }
+  
+fs.readFile("input.txt", solve)
+
+
